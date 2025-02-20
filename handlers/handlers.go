@@ -9,7 +9,7 @@ import (
 
 func GetStatsHandler(mockSES *config.MockSESConfig) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		stats := mockSES.GetStats()
+		stats := mockSES.Statistics.GetStats()
 		c.JSON(http.StatusOK, stats)
 	}
 }

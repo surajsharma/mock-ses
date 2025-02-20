@@ -3,6 +3,7 @@ package config
 import (
 	"mock-ses/email"
 	"mock-ses/stats"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -18,23 +19,42 @@ type MockSESConfig struct {
 }
 
 func (m *MockSESConfig) isEmailVerified(input string) bool {
+	//any verification logic
+
+	allowedDomains := []string{"gmail.com", "hotmail.com", "yahoo.com"}
+
+	parts := strings.Split(input, "@")
+
+	if len(parts) != 2 {
+		return false
+	}
+
+	domain := strings.ToLower(parts[1])
+
+	for _, allowedDomain := range allowedDomains {
+		if domain == allowedDomain {
+			return true
+		}
+	}
+
 	return false
 }
 
 func (m *MockSESConfig) checkQuota() bool {
-	return false
+	return m.Statistics.EmailsSent <= m.DailyQuota
 }
 
 func (m *MockSESConfig) checkRateLimit() bool {
-	return false
+	return m.Statistics.EmailsSent <= int(m.SendRate)
 }
 
 func (m *MockSESConfig) GetStats() map[string]interface{} {
-	return m.GetStats()
+	return m.Statistics.GetStats()
 }
 
 func (m *MockSESConfig) SendEmail(c *gin.Context) {
 	var input email.SendEmailInput
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{
 			"error":   "ValidationError",
