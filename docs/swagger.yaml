@@ -1,0 +1,32 @@
+info:
+  contact: {}
+paths:
+  /v2/email/GetSendStatistics:
+    get:
+      description: Provides sending statistics for the current AWS Region. The result
+        is a list of data points, representing the last two weeks of sending activity.
+        Each data point in the list contains statistics for a 15-minute period of
+        time. You can execute this operation no more than once per second.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: GetSendStatistics Handler
+  /v2/email/SendEmail:
+    post:
+      description: 'Composes an email message and immediately queues it for sending.
+        In order to send email using the SendEmail  operation, your message must meet
+        the following requirements: The message must be sent from a verified email
+        address or domain. If you attempt to send email using a non-verified address
+        or domain, the operation will result in an \"Email address not verified\"
+        error. If your account is still in the Amazon SES sandbox, you may only send
+        to verified addresses or domains, or to email addresses associated with the
+        Amazon SES Mailbox Simulator.'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: SendEmail Handler
+swagger: "2.0"

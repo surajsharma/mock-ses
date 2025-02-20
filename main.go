@@ -5,11 +5,16 @@ import (
 	"mock-ses/handlers"
 	"mock-ses/stats"
 
+	docs "mock-ses/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
 	r := gin.Default()
+	docs.SwaggerInfo.BasePath = "/v2"
 
 	mockSES := &config.MockSESConfig{
 		InSandboxMode:   true,
@@ -23,9 +28,9 @@ func main() {
 			Templates:  make(map[string]int),
 		},
 	}
-
-	r.POST("/v2/email/send", handlers.SendEMailHandler(mockSES))
-	r.GET("/stats", handlers.GetStatsHandler(mockSES))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.POST("/v2/email/SendEmail", handlers.SendEMailHandler(mockSES))
+	r.GET("/v2/email/GetSendStatistics", handlers.GetStatsHandler(mockSES))
 
 	r.Run(":8080")
 }
